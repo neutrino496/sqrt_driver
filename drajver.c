@@ -81,8 +81,6 @@ char led[4];
 u32 led_val = 0x00;
 int numbers[1000];
 int korijeni[1000];
-int pomocni[1000];
-
 
 static int sqrt_probe(struct platform_device *pdev);
 static int sqrt_remove(struct platform_device *pdev);
@@ -242,17 +240,17 @@ static int sqrt_probe(struct platform_device *pdev) {
 
     return 0; // ALL OK
 
-error6:
-    release_mem_region(bp4->mem_start, bp4->mem_end - bp4->mem_start + 1);
-error5:
-    release_mem_region(bp3->mem_start, bp3->mem_end - bp3->mem_start + 1);
-error4:
-    release_mem_region(bp2->mem_start, bp2->mem_end - bp2->mem_start + 1);
-error3:
-    release_mem_region(bp1->mem_start, bp1->mem_end - bp1->mem_start + 1);
-error2:
-    release_mem_region(bp0->mem_start, bp0->mem_end - bp0->mem_start + 1);
-error1:
+    error6:
+        release_mem_region(bp4->mem_start, bp4->mem_end - bp4->mem_start + 1);
+    error5:
+        release_mem_region(bp3->mem_start, bp3->mem_end - bp3->mem_start + 1);
+    error4:
+        release_mem_region(bp2->mem_start, bp2->mem_end - bp2->mem_start + 1);
+    error3:
+        release_mem_region(bp1->mem_start, bp1->mem_end - bp1->mem_start + 1);
+    error2:
+        release_mem_region(bp0->mem_start, bp0->mem_end - bp0->mem_start + 1);
+    error1:
     kfree(bp4);
     kfree(bp3);
     kfree(bp2);
@@ -324,7 +322,7 @@ static void obrada(void) {
         if (core_0 == 0){
             iowrite32((u32)1, bp0->base_addr + REG_START_OFFSET); // pokretanje prvog jezgra
             iowrite32((u32)0, bp0->base_addr + REG_START_OFFSET);
-            core_0 = 1; // ovo znaci da je prvo jezgro aktivno
+            core_0 = 1;                 // ovo znaci da je prvo jezgro aktivno
             led_val = led_val | 0x08;   // paljenje prve diode koja simulira rad prvog jezgra
             iowrite32(led_val, bp4->base_addr);
         }
@@ -357,8 +355,8 @@ static void obrada(void) {
         wait1:
         if(ioread32(bp0->base_addr + REG_READY_OFFSET) == 1) {
             korijeni[k] = ioread32(bp0->base_addr + REG_Y_OFFSET);
-            core_0 = 0; // prvo jezgro prestalo s radom
-            led_val = led_val & 0x07;  // 0111 - gasenje prve diode
+            core_0 = 0;                 // prvo jezgro prestalo s radom
+            led_val = led_val & 0x07;   // 0111 - gasenje prve diode
             iowrite32(led_val, bp4->base_addr);
         } else { goto wait1; }
  
@@ -610,7 +608,6 @@ static int __init sqrt_init(void)
     printk(KERN_INFO "cdev added\n");
     printk(KERN_INFO "Hello world\n");
 
-    // Register the platform drivers for all 5 devices
     ret = platform_driver_register(&sqrt_driver);
     if (ret < 0) {
         printk(KERN_ERR "Failed to register sqrt_driver_0: %d\n", ret);
