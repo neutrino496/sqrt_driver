@@ -8,20 +8,18 @@
 
 void *write_thread(int *arg) {
     int fd = *arg;
+    int i;
 	int numbers[8];
 	int num_of_elements;
     srand(time(NULL));
-int i;
+    
     while (1) {
         sleep(rand() % 5 + 1); // Sleep for 1-5 seconds
-         
-		num_of_elements= 4 + (rand() % 5);
-for (i = 0; i < num_of_elements; i++)
-{
-numbers[i] = (rand()%32768)+1; // Generate a random number
-        dprintf(fd, "%u ",(unsigned int) (numbers[i]*numbers[i]));
-		}
-		
+        num_of_elements= 4 + (rand() % 5);
+        for (i = 0; i < num_of_elements; i++) {
+            numbers[i] = (rand()%32768)+1; // Generate a random number
+            dprintf(fd, "%u ",(unsigned int) (numbers[i]*numbers[i]));
+		}	
     }
 
     return NULL;
@@ -41,13 +39,13 @@ void *read_thread(int *arg) {
             printf("Read from driver: %s\n", buffer);
         }
 		int parsed = sscanf(buffer, "broj %u - %u:%u", &br, &number, &parsed_sqrt);
-            if (parsed == 3) {
-                if (number == (parsed_sqrt*parsed_sqrt)) {
-                    printf("Calculated square root is correct!\n");
-                } else {
-                    printf("Calculated square root is incorrect!\n");
-                }
+        if (parsed == 3) {
+            if (number == (parsed_sqrt*parsed_sqrt)) {
+                printf("Calculated square root is correct!\n");
+            } else {
+                printf("Calculated square root is incorrect!\n");
             }
+        }
     }
 
     return NULL;
